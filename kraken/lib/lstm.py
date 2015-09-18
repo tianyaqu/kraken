@@ -280,3 +280,39 @@ class SeqRecognizer(Network):
         "Predict output as a string. This uses codec and normalizer."
         cs = self.predictSequence(xs)
         return self.l2s(cs)
+
+
+class ClstmSeqRecognizer(SeqRecognizer):
+    """
+    A class providing the same interface to CLSTM networks as to pyrnn
+    ones.
+    """
+    def __init__(self, fname, normalize=normalize_nfkc):
+        self.fname = fname
+        self.rnn = None
+        self.normalize = normalize
+        global clstm
+        import clstm
+
+    def load_model(self):
+        self.rnn = clstm.load_net(self.fname.encode('utf-8'))
+
+    def predictString(self, line):
+        # we defer loading as SWIG interfaced objects are not pickleable.
+        # fortunately loading protobufs is fast.
+        if not self.rnn:
+            self.load_model()
+        line = line.reshape(-1, self.rnn.ninput(), 1)
+        self.rnn.inputs.aset(line.astype('float32'))
+        self.rnn.forward()
+        self.outputs = self.rnn.outputs.array().reshape(line.shape[0], self.rnn.noutput())
+        codes = kraken.lib.lstm.translate_back(self.outputs)
+        cls = clstm.Classes()
+        cls.resize(len(codes))
+        for i, v in enumerate(codes):
+            cls[i] = v
+        res = self.rnn.decode(cls)
+        # and delete again for pickleability
+        self.rnn = None
+        return res
+
