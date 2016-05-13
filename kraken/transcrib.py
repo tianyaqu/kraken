@@ -1,4 +1,20 @@
 # -*- coding: utf-8 -*-
+#
+# Copyright 2015 Benjamin Kiessling
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+# or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+# -*- coding: utf-8 -*-
 """
 Utility functions for ground truth transcription.
 """
@@ -19,10 +35,11 @@ import os
 
 class TranscriptionInterface(object):
 
-    def __init__(self):
+    def __init__(self, font=None, font_style=None):
         env = Environment(loader=PackageLoader('kraken', 'templates'))
         self.tmpl = env.get_template('layout.html')
         self.pages = []
+        self.font = {'font': font, 'style': font_style}
         self.page_idx = 1
         self.line_idx = 1
         self.seg_idx = 1
@@ -78,4 +95,4 @@ class TranscriptionInterface(object):
         Args:
             fd (File): File descriptor to write to.
         """
-        fd.write(self.tmpl.render(pages=self.pages).encode('utf-8'))
+        fd.write(self.tmpl.render(pages=self.pages, font=self.font).encode('utf-8'))

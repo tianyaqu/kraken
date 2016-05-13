@@ -6,4 +6,5 @@ numpy
 Pillow
 regex
 scipy
-protobuf==3.0.0a3
+protobuf==3.0.0b2
+jinja2

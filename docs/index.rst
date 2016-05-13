@@ -6,6 +6,7 @@ kraken
    :maxdepth: 2
 
    advanced
+   Training <ketos>
    API <api>
    Models <models>
 
@@ -48,7 +49,7 @@ equivalent and some dependencies.
 
 .. code-block:: console
 
-        # apt-get install gcc gfortran python-dev libblas-dev liblapack-dev
+        # apt-get install gcc gfortran python-dev libblas-dev liblapack-dev libpangocairo-1.0
 
 If `clstm <https://github.com/tmbdev/clstm>`_ support is desired (highly
 recommended) the associated python extension has to be build and installed.
@@ -111,7 +112,7 @@ To segment a binarized image into reading-order sorted lines:
 
 ::
 
-  $ kraken -i bw.tif lines.txt segment bw.png
+  $ kraken -i bw.tif lines.txt segment
 
 To OCR a binarized image using the default RNN and the previously generated
 page segmentation:
